@@ -1,0 +1,54 @@
+spring:
+  application:
+    name: config-server
+  cloud:
+    config:
+      server:
+        composite:
+          -
+            type: couchbase
+            connectionString: couchbase://localhost
+            userName: Administrator
+            password: password
+            bucketName: configuration-service
+            scopeName: technical
+            collectionName: application-properties
+            order: 1
+          -
+            type: git
+            uri: https://github.com/LordMaduz/spring-cloud-config-repository.git
+            search-paths:
+              - '{application}/{profile}'
+            order: 2
+
+    bus:
+      enabled: true
+      id: my-config-server
+      destination: spring_cloud_config_channel
+    stream:
+      kafka:
+        binder:
+          autoCreateTopics: false
+          brokers: localhost:9095
+          consumer-properties:
+            allow:
+              auto:
+                create:
+                  topics: false
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, busrefresh, bus-env, reresh, env
+  endpoint:
+    info:
+      enabled: true
+    health:
+      enabled: true
+
+logging:
+  level:
+    ROOT: WARN
+    com.example.demo.*: info
