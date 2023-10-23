@@ -31,8 +31,11 @@ public class CouchbaseEnvironmentRepository implements EnvironmentRepository, Or
     @Override
     public Environment findOne(String application, String profile, String label) {
         Environment environment = new Environment(application, profile, label, null, null);
-        GetResult getResult = collection.get(application);
-        environment.add(new PropertySource("couchbase" + application, getResultMap(getResult)));
+        ExistsResult existsResult = collection.exists(application);
+        if (existsResult.exists()) {
+            GetResult getResult = collection.get(application);
+            environment.add(new PropertySource("couchbase" + application, getResultMap(getResult)));
+        }
         return environment;
     }
 
