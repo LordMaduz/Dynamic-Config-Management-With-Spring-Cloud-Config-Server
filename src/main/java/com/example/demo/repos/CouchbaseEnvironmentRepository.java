@@ -1,6 +1,7 @@
 package com.example.demo.repos;
 
 import com.couchbase.client.java.Collection;
+import com.couchbase.client.java.kv.ExistsResult;
 import com.couchbase.client.java.kv.GetResult;
 import com.example.demo.config.CouchbaseEnvironmentProperties;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -34,7 +35,7 @@ public class CouchbaseEnvironmentRepository implements EnvironmentRepository, Or
         ExistsResult existsResult = collection.exists(application);
         if (existsResult.exists()) {
             GetResult getResult = collection.get(application);
-            environment.add(new PropertySource("couchbase" + application, getResultMap(getResult)));
+            environment.add(new PropertySource("mongo" + application, getResultMap(getResult)));
         }
         return environment;
     }

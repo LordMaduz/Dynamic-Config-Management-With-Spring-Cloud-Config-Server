@@ -14,12 +14,20 @@ spring:
             scopeName: technical
             collectionName: application-properties
             order: 1
+
           -
             type: git
             uri: https://github.com/LordMaduz/spring-cloud-config-repository.git
             search-paths:
               - '{application}/{profile}'
             order: 2
+
+          -
+            type: mongo
+            connectionString: mongodb://localhost:27017
+            database: config-service
+            collectionName: application-properties
+            order: 3
 
     bus:
       enabled: true
