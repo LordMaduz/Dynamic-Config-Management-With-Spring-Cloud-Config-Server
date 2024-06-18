@@ -38,7 +38,7 @@ public class MongoEnvironmentRepository implements EnvironmentRepository, Ordere
         Document document = mongoCollection.find(Filters.eq(APPLICATION_ID, application))
             .first();
         if (document != null) {
-            environment.add(new PropertySource("couchbase" + application, getResultMap(document)));
+            environment.add(new PropertySource("mongo" + application, getResultMap(document)));
         }
 
         return environment;

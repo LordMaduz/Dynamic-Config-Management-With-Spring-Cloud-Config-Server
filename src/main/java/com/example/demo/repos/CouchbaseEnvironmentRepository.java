@@ -35,7 +35,7 @@ public class CouchbaseEnvironmentRepository implements EnvironmentRepository, Or
         ExistsResult existsResult = collection.exists(application);
         if (existsResult.exists()) {
             GetResult getResult = collection.get(application);
-            environment.add(new PropertySource("mongo" + application, getResultMap(getResult)));
+            environment.add(new PropertySource("couchbase" + application, getResultMap(getResult)));
         }
         return environment;
     }
