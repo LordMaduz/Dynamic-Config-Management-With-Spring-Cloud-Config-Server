@@ -18,7 +18,7 @@ A production-ready Spring Cloud Config Server that provides centralized configur
 ---
 
 ## Architecture
-
+<img width="2086" height="1520" alt="Mermaid Chart - Create complex, visual diagrams with text -2025-10-14-101443" src="https://github.com/user-attachments/assets/714f2b83-e398-4daa-a6df-433d21845683" />
 
 ---
 
