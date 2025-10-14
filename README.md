@@ -227,3 +227,76 @@ public class MyController {
     }
 }
 ```
+
+## Key Features
+
+### Custom Couchbase Environment Repository
+
+Implements Spring Cloud Config's `EnvironmentRepository` interface:
+
+```java
+public class CouchbaseEnvironmentRepository implements EnvironmentRepository, Ordered {
+
+    private final Collection collection;
+    private int order;
+
+    @Override
+    public Environment findOne(String application, String profile, String label) {
+        Environment environment = new Environment(application, profile, label, null, null);
+        
+        // Check if configuration exists in Couchbase
+        if (collection.exists(application).exists()) {
+            GetResult result = collection.get(application);
+            Map properties = flattenJson(result);
+            environment.add(new PropertySource("couchbase" + application, properties));
+        }
+        
+        return environment;
+    }
+
+    private Map flattenJson(GetResult result) {
+        JsonNode node = objectMapper.convertValue(
+            result.contentAs(JsonNode.class), 
+            new TypeReference<>() {});
+        return JsonMapFlattener.flatten(node);
+    }
+}
+```
+
+### Configuration Factory
+
+```java
+public class CouchbaseEnvironmentRepositoryFactory 
+        implements EnvironmentRepositoryFactory {
+
+    @Override
+    public CouchbaseEnvironmentRepository build(CouchbaseEnvironmentProperties props) {
+        Collection collection = new CouchbaseClient().build(props);
+        CouchbaseEnvironmentRepository repository = 
+            new CouchbaseEnvironmentRepository(collection, props);
+        repository.setOrder(props.getOrder());
+        return repository;
+    }
+}
+```
+
+### Composite Configuration
+
+Spring Cloud Config checks backends in order until configuration is found:
+
+```yaml
+composite:
+  - type: couchbase    # Checked first (order: 1)
+    order: 1
+  - type: git          # Checked second (order: 2)
+    order: 2
+```
+
+## Learn More
+
+For detailed implementation guides and best practices, check out following medium article:
+
+**Spring Cloud Config Deep Dives:**
+
+[Building Centralized Configuration with Spring Cloud Config](https://blog.stackademic.com/couchbase-as-a-custom-composite-environment-repository-in-spring-cloud-config-server-e94606e6272f)
+
