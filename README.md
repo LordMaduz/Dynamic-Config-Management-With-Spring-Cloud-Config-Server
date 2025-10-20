@@ -1,4 +1,4 @@
-# Spring Cloud Config Server
+# Centralized Configuration Management With Spring Cloud Config Server
 
 > Centralized configuration management server with multi-backend support (Git, Couchbase) and dynamic refresh capabilities using Spring Cloud Bus.
 
